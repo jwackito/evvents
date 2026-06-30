@@ -18,6 +18,10 @@ def create_app() -> APIFlask:
     register_error_handlers(app)
     register_blueprints(app)
 
+    @app.get("/health")
+    def health():
+        return {"status": "ok"}
+
     return app
 
 

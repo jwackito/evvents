@@ -25,4 +25,6 @@ RUN addgroup --system --gid 1001 appgroup \
     && adduser --system --uid 1001 --gid 1001 appuser
 USER appuser
 COPY . .
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "app:create_app()"]
