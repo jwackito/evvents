@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from apiflask import APIBlueprint, Schema
+from flask import request
 from marshmallow import fields, validate
 
 from app.api.decorators import require_auth
 from app.services.order_service import create_order
 from app.services.ticket_service import check_in_ticket, get_ticket_by_qr, link_ticket
+from app.services.waitlist_service import get_position, join_waitlist, leave_waitlist
 
 tickets_bp = APIBlueprint("tickets", __name__, url_prefix="/api/v1")
 
@@ -56,3 +58,37 @@ def check_in(json_data):
 @tickets_bp.input(LinkInput)
 def link(json_data):
     return link_ticket(json_data["qr_hash"], json_data["link_code"])
+
+
+class WaitlistJoinInput(Schema):
+    ticket_type_id = fields.String(required=True)
+    attendee_name = fields.String(required=True, validate=validate.Length(min=1, max=255))
+    attendee_email = fields.Email(allow_none=True, load_default=None)
+
+
+class WaitlistLeaveInput(Schema):
+    link_code = fields.String(required=True)
+
+
+@tickets_bp.post("/events/<slug>/waitlist")
+@tickets_bp.input(WaitlistJoinInput)
+def waitlist_join(slug: str, json_data):
+    return join_waitlist(
+        event_slug=slug,
+        ticket_type_id=json_data["ticket_type_id"],
+        attendee_name=json_data["attendee_name"],
+        attendee_email=json_data.get("attendee_email"),
+    ), 201
+
+
+@tickets_bp.delete("/waitlist/<id>")
+@tickets_bp.input(WaitlistLeaveInput, location="json")
+def waitlist_leave(id: str, json_data):
+    leave_waitlist(id, json_data["link_code"])
+    return {}, 204
+
+
+@tickets_bp.get("/events/<slug>/waitlist/position")
+def waitlist_position(slug: str):
+    email = request.args.get("email", "")
+    return get_position(slug, email)

@@ -22,6 +22,8 @@ from app.services.org_service import (
     update_event,
     update_ticket_type,
 )
+from app.services.seating_service import assign_seat, bulk_assign, get_seating, release_seat
+from app.services.waitlist_service import claim_entry, list_event_waitlist
 
 org_bp = APIBlueprint("org", __name__, url_prefix="/api/v1/org")
 
@@ -169,3 +171,60 @@ def org_bot_config(json_data):
 def org_checkin():
     org_id = _require_org()
     return list_checkin_events(org_id)
+
+
+@org_bp.get("/events/<id>/waitlist")
+@require_role("admin", "operator")
+def org_waitlist(id: str):
+    org_id = _require_org()
+    return list_event_waitlist(uuid.UUID(id), org_id)
+
+
+@org_bp.post("/events/<event_id>/waitlist/<entry_id>/claim")
+@require_role("admin")
+def org_claim_waitlist(event_id: str, entry_id: str):
+    org_id = _require_org()
+    return claim_entry(uuid.UUID(entry_id), org_id, uuid.UUID(event_id))
+
+
+@org_bp.get("/events/<id>/seating")
+@require_role("admin", "operator", "checkin_staff")
+def org_get_seating(id: str):
+    org_id = _require_org()
+    return get_seating(uuid.UUID(id), org_id)
+
+
+class SeatAssign(Schema):
+    seat = fields.String(required=True, validate=validate.Length(max=50))
+
+
+class SeatBulkAssign(Schema):
+    assignments = fields.Dict(
+        keys=fields.String(),
+        values=fields.String(allow_none=True),
+        required=True,
+    )
+
+
+@org_bp.put("/events/<event_id>/seating/<ticket_id>")
+@org_bp.input(SeatAssign)
+@require_role("admin", "operator")
+def org_assign_seat(event_id: str, ticket_id: str, json_data):
+    org_id = _require_org()
+    return assign_seat(uuid.UUID(event_id), uuid.UUID(ticket_id), org_id, json_data["seat"])
+
+
+@org_bp.delete("/events/<event_id>/seating/<ticket_id>")
+@require_role("admin", "operator")
+def org_release_seat(event_id: str, ticket_id: str):
+    org_id = _require_org()
+    release_seat(uuid.UUID(event_id), uuid.UUID(ticket_id), org_id)
+    return {}, 204
+
+
+@org_bp.put("/events/<id>/seating/bulk")
+@org_bp.input(SeatBulkAssign)
+@require_role("admin", "operator")
+def org_bulk_assign_seats(id: str, json_data):
+    org_id = _require_org()
+    return bulk_assign(uuid.UUID(id), org_id, json_data["assignments"])
