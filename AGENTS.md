@@ -127,9 +127,7 @@ This section is updated after every completed task and when new features are req
 ### Backlog
 
 #### Low Effort / High Value
-- [ ] **Wire `enqueue_ticket_card` to order creation** — call from `POST /events/<slug>/order` so ticket cards auto-send on purchase. *(1 file, ~2 lines)*
-- [ ] **Docker `HEALTHCHECK`** — add to `Dockerfile` `production` stage. *(1 line)*
-- [ ] **Init flask-cors** — call `CORS(app)` in `create_app()`. *(1 line)*
+- *(empty — all done)*
 
 #### Features
 - [ ] **Check-in blueprint** — `app/api/checkin.py` is empty; needs real endpoints (scanning, validation, history).
@@ -146,4 +144,7 @@ This section is updated after every completed task and when new features are req
 
 ### Recently Completed
 
+- **`feat: add /health endpoint and HEALTHCHECK to Dockerfile`**
+- **`feat: init flask-cors in app factory`**
+- **`feat: enqueue ticket card on order creation`**
 - *(reset at project start; oldest items drop as new ones are added)*
