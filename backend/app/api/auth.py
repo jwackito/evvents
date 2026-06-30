@@ -9,6 +9,7 @@ from marshmallow import fields, validate
 from app.api.decorators import require_auth
 from app.exceptions import AuthError
 from app.services.auth_service import authenticate, create_user, get_user_by_id
+from app.tasks.email_tasks import send_magic_link
 from app.utils.jwt import create_access_token, create_refresh_token, decode_token
 
 auth_bp = APIBlueprint("auth", __name__, url_prefix="/api/v1/auth")
@@ -76,8 +77,12 @@ def magic_link(json_data):
     if user is None:
         return {"data": {"message": "If the email exists, a magic link has been generated"}}
 
+    from flask import current_app
+
     token = create_access_token(user.id, {"role": user.role.value, "purpose": "magic_link"})
-    return {"data": {"token": token, "message": "Magic link generated (email sending not implemented)"}}
+    base_url = current_app.config.get("APP_BASE_URL", "http://localhost:5000")
+    send_magic_link(email=json_data["email"], token=token, base_url=base_url)
+    return {"data": {"message": "Magic link sent"}}
 
 
 @auth_bp.post("/refresh")

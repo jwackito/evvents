@@ -103,8 +103,7 @@ def test_magic_link_existing_email(client):
     })
     resp = client.post(f"{URL}/magic-link", json={"email": "user@test.com"})
     assert resp.status_code == 200
-    data = resp.get_json()["data"]
-    assert "token" in data
+    assert resp.get_json()["data"]["message"] == "Magic link sent"
 
 
 def test_magic_link_nonexistent_email(client):
