@@ -130,7 +130,6 @@ This section is updated after every completed task and when new features are req
 - *(empty — all done)*
 
 #### Features
-- [ ] **Check-in blueprint** — `app/api/checkin.py` is empty; needs real endpoints (scanning, validation, history).
 - [ ] **Plugin system** — `app/plugins/__init__.py` is empty; `pyproject.toml` has entry-point stubs.
 
 #### Testing
@@ -144,6 +143,9 @@ This section is updated after every completed task and when new features are req
 
 ### Recently Completed
 
+- **`feat: implement check-in blueprint with 6 endpoints`**
+- **`feat: add check-in service with scan, undo, history, search, stats`**
+- **`test: add 27 tests for check-in blueprint`**
 - **`feat: add /health endpoint and HEALTHCHECK to Dockerfile`**
 - **`feat: init flask-cors in app factory`**
 - **`feat: enqueue ticket card on order creation`**
