@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from app.config import Settings
 from app.extensions import db, migrate
+from app.plugins import init_plugins
 
 
 def create_app() -> APIFlask:
@@ -20,6 +21,7 @@ def create_app() -> APIFlask:
 
     register_error_handlers(app)
     register_blueprints(app)
+    init_plugins(app)
 
     @app.get("/health")
     def health():
