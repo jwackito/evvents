@@ -130,7 +130,7 @@ This section is updated after every completed task and when new features are req
 - *(empty — all done)*
 
 #### Features
-- [ ] **Plugin system** — `app/plugins/__init__.py` is empty; `pyproject.toml` has entry-point stubs.
+- *(empty — all done)*
 
 #### Testing
 - [ ] **Unit tests for services** — `email_service`, `order_service`, `waitlist_service`, `seating_service`, `admin_service`.
@@ -143,10 +143,11 @@ This section is updated after every completed task and when new features are req
 
 ### Recently Completed
 
+- **`feat: add plugin base classes with hook interfaces`**
+- **`feat: add plugin registry with type-based querying`**
+- **`feat: add plugin discovery via importlib.metadata entry points`**
+- **`feat: wire plugin system into app factory`**
+- **`test: add 16 tests for plugin system`**
 - **`feat: implement check-in blueprint with 6 endpoints`**
 - **`feat: add check-in service with scan, undo, history, search, stats`**
-- **`test: add 27 tests for check-in blueprint`**
-- **`feat: add /health endpoint and HEALTHCHECK to Dockerfile`**
-- **`feat: init flask-cors in app factory`**
-- **`feat: enqueue ticket card on order creation`**
 - *(reset at project start; oldest items drop as new ones are added)*
