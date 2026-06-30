@@ -1,4 +1,4 @@
-# Smart Event Tickets — Engineering Conventions
+# Evvents — Engineering Conventions
 
 ## Python
 

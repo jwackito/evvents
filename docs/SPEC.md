@@ -1,4 +1,4 @@
-# Smart Event Tickets — Specification v1
+# Evvents — Specification v1
 
 ## Tech Stack
 
