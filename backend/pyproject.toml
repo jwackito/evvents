@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "evvents"
+version = "0.1.0"
+description = "Event management platform"
+requires-python = ">=3.11"
+dependencies = [
+    "flask==3.1.0",
+    "flask-sqlalchemy==3.1.1",
+    "flask-migrate==4.0.7",
+    "flask-cors==5.0.0",
+    "flask-socketio==5.4.1",
+    "apiflask==3.0.1",
+    "sqlalchemy==2.0.35",
+    "psycopg2-binary==2.9.9",
+    "redis==5.2.0",
+    "rq==1.16.2",
+    "structlog==24.4.0",
+    "pydantic-settings==2.5.2",
+    "pydantic==2.9.2",
+    "bcrypt==4.2.0",
+    "pyjwt==2.9.0",
+    "python-telegram-bot==21.7",
+    "qrcode[pil]==7.4.2",
+    "pillow==11.0.0",
+    "gunicorn==23.0.0",
+    "marshmallow==3.23.0",
+    "python-dotenv==1.0.1",
+    "alembic==1.13.3",
+]
+
+[project.entry-points."tickets.plugins"]
