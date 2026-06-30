@@ -45,10 +45,14 @@ class Event(TimestampMixin, SoftDeleteMixin, db.Model):
     location: Mapped[str | None] = mapped_column(String(255), nullable=True)
     capacity: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[EventStatus] = mapped_column(
-        Enum(EventStatus), nullable=False, default=EventStatus.DRAFT
+        Enum(EventStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=EventStatus.DRAFT,
     )
     seating_type: Mapped[SeatingType] = mapped_column(
-        Enum(SeatingType), nullable=False, default=SeatingType.GENERAL
+        Enum(SeatingType, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=SeatingType.GENERAL,
     )
     slug: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     cover_image: Mapped[str | None] = mapped_column(String(512), nullable=True)

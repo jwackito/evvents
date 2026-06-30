@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: dadc655a657d
-Revises: 
-Create Date: 2026-06-30 19:21:15.223971
+Revision ID: f92a0d1ca8a0
+Revises: f7d45a200073
+Create Date: 2026-06-30 19:33:54.673981
 """
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
-revision: str = 'dadc655a657d'
-down_revision: str | None = None
+revision: str = 'f92a0d1ca8a0'
+down_revision: str | None = 'f7d45a200073'
 branch_labels: str | Collection[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -52,8 +52,8 @@ def upgrade() -> None:
     sa.Column('date', sa.DateTime(timezone=True), nullable=False),
     sa.Column('location', sa.String(length=255), nullable=True),
     sa.Column('capacity', sa.Integer(), nullable=False),
-    sa.Column('status', sa.Enum('DRAFT', 'PUBLISHED', 'CANCELLED', 'COMPLETED', name='eventstatus'), nullable=False),
-    sa.Column('seating_type', sa.Enum('GENERAL', 'ASSIGNED', name='seatingtype'), nullable=False),
+    sa.Column('status', sa.Enum('draft', 'published', 'cancelled', 'completed', name='eventstatus'), nullable=False),
+    sa.Column('seating_type', sa.Enum('general', 'assigned', name='seatingtype'), nullable=False),
     sa.Column('slug', sa.String(length=255), nullable=False),
     sa.Column('cover_image', sa.String(length=512), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
