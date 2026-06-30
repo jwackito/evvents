@@ -32,7 +32,9 @@ class Order(TimestampMixin, db.Model):
         UUID(as_uuid=True), ForeignKey("events.id"), nullable=False, index=True
     )
     status: Mapped[OrderStatus] = mapped_column(
-        Enum(OrderStatus), nullable=False, default=OrderStatus.PENDING
+        Enum(OrderStatus, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=OrderStatus.PENDING,
     )
 
     event: Mapped[Event] = relationship("Event", back_populates="orders", lazy="selectin")

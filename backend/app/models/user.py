@@ -30,7 +30,11 @@ class User(TimestampMixin, db.Model):
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False, default=UserRole.OPERATOR)
+    role: Mapped[UserRole] = mapped_column(
+        Enum(UserRole, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=UserRole.OPERATOR,
+    )
     organization_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("organizations.id"), nullable=True
     )
