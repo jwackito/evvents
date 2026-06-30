@@ -119,3 +119,31 @@
 
 - **Project only**: All modifications are restricted to files within the project directory.
 - **Never modified**: System configs, global packages, home directory files, or anything outside the project. If an external change is needed (e.g., system dependency), explicit permission is requested first.
+
+## Remaining Work Tracker
+
+This section is updated after every completed task and when new features are requested. Items are sorted by priority within each category.
+
+### Backlog
+
+#### Low Effort / High Value
+- [ ] **Wire `enqueue_ticket_card` to order creation** — call from `POST /events/<slug>/order` so ticket cards auto-send on purchase. *(1 file, ~2 lines)*
+- [ ] **Docker `HEALTHCHECK`** — add to `Dockerfile` `production` stage. *(1 line)*
+- [ ] **Init flask-cors** — call `CORS(app)` in `create_app()`. *(1 line)*
+
+#### Features
+- [ ] **Check-in blueprint** — `app/api/checkin.py` is empty; needs real endpoints (scanning, validation, history).
+- [ ] **Plugin system** — `app/plugins/__init__.py` is empty; `pyproject.toml` has entry-point stubs.
+
+#### Testing
+- [ ] **Unit tests for services** — `email_service`, `order_service`, `waitlist_service`, `seating_service`, `admin_service`.
+- [ ] **Unit tests for tasks** — `telegram_tasks`, `email_tasks`.
+- [ ] **Unit tests for utils** — JWT utils, decorators.
+- [ ] **Unit tests for models** — constraints, relationships, custom methods.
+
+#### Frontend
+- [ ] **Scaffold React SPA** — Vite + TypeScript + React Router + Zustand + TanStack Query. No code exists.
+
+### Recently Completed
+
+- *(reset at project start; oldest items drop as new ones are added)*
