@@ -123,6 +123,26 @@ def admin_token(admin_user: User) -> str:
 
 
 @pytest.fixture
+def super_admin_user(db) -> User:
+    user = User(
+        id=uuid.uuid4(),
+        email="super@admin.com",
+        password_hash=hash_password("password123"),
+        name="Super Admin",
+        role=UserRole.ADMIN,
+        organization_id=None,
+    )
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture
+def super_admin_token(super_admin_user: User) -> str:
+    return create_access_token(super_admin_user.id, {"role": super_admin_user.role.value})
+
+
+@pytest.fixture
 def operator_token(operator_user: User) -> str:
     return create_access_token(operator_user.id, {"role": operator_user.role.value})
 

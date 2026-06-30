@@ -8,14 +8,14 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.extensions import db
-from app.models.mixins import TimestampMixin
+from app.models.mixins import SoftDeleteMixin, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.event import Event
     from app.models.user import User
 
 
-class Organization(TimestampMixin, db.Model):
+class Organization(TimestampMixin, SoftDeleteMixin, db.Model):
     __tablename__ = "organizations"
 
     id: Mapped[uuid.UUID] = mapped_column(
