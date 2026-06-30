@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import uuid
 
+from app.utils.jwt import create_access_token
+
 URL = "/api/v1/auth"
 
 
@@ -110,6 +112,45 @@ def test_magic_link_nonexistent_email(client):
     resp = client.post(f"{URL}/magic-link", json={"email": "nobody@test.com"})
     assert resp.status_code == 200
     assert resp.get_json()["data"]["message"]
+
+
+def test_magic_link_verify_success(client):
+    reg = client.post(f"{URL}/register", json={
+        "email": "user@test.com",
+        "password": "password123",
+        "name": "User",
+    })
+    user_id = reg.get_json()["data"]["user"]["id"]
+    token = create_access_token(uuid.UUID(user_id), {"purpose": "magic_link"})
+
+    resp = client.get(f"{URL}/magic-link/verify?token={token}")
+    assert resp.status_code == 200
+    data = resp.get_json()["data"]
+    assert "access_token" in data
+    assert "refresh_token" in data
+
+
+def test_magic_link_verify_invalid_token(client):
+    resp = client.get(f"{URL}/magic-link/verify?token=garbage-token")
+    assert resp.status_code == 401
+
+
+def test_magic_link_verify_wrong_purpose(client):
+    reg = client.post(f"{URL}/register", json={
+        "email": "user@test.com",
+        "password": "password123",
+        "name": "User",
+    })
+    user_id = reg.get_json()["data"]["user"]["id"]
+    token = create_access_token(uuid.UUID(user_id))
+
+    resp = client.get(f"{URL}/magic-link/verify?token={token}")
+    assert resp.status_code == 401
+
+
+def test_magic_link_verify_missing_token(client):
+    resp = client.get(f"{URL}/magic-link/verify")
+    assert resp.status_code == 422
 
 
 def test_refresh_success(client):

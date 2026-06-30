@@ -30,6 +30,10 @@ class MagicLinkInput(Schema):
     email = fields.String(required=True, validate=validate.Email())
 
 
+class MagicLinkVerifyInput(Schema):
+    token = fields.String(required=True)
+
+
 class RefreshInput(Schema):
     refresh_token = fields.String(required=True)
 
@@ -83,6 +87,28 @@ def magic_link(json_data):
     base_url = current_app.config.get("APP_BASE_URL", "http://localhost:5000")
     send_magic_link(email=json_data["email"], token=token, base_url=base_url)
     return {"data": {"message": "Magic link sent"}}
+
+
+@auth_bp.get("/magic-link/verify")
+@auth_bp.input(MagicLinkVerifyInput, location="query")
+def magic_link_verify(query_data):
+    payload = decode_token(query_data["token"])
+    if payload is None or payload.get("type") != "access" or payload.get("purpose") != "magic_link":
+        raise AuthError("Invalid or expired magic link")
+
+    user_id = uuid.UUID(payload["sub"])
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise AuthError("User not found")
+
+    access_token = create_access_token(user.id, {"role": user.role.value})
+    refresh_token = create_refresh_token(user.id)
+    return {
+        "data": {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
+    }
 
 
 @auth_bp.post("/refresh")
