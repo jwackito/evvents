@@ -140,10 +140,11 @@ This section is updated after every completed task and when new features are req
 - [ ] **Unit tests for models** — constraints, relationships, custom methods.
 
 #### Frontend
-- [ ] **Scaffold React SPA** — Vite + TypeScript + React Router + Zustand + TanStack Query. No code exists.
+- [ ] **Build full UI on top of scaffold** — Login, Register, Dashboard, Events pages with proper forms, tables, and styling.
 
 ### Recently Completed
 
+- **`feat: scaffold React SPA`**
 - **`refactor: use factory_boy for test fixtures`**
 - **`feat: add plugin base classes with hook interfaces`**
 - **`feat: add plugin registry with type-based querying`**
