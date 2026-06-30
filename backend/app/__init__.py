@@ -54,7 +54,7 @@ def register_error_handlers(app: APIFlask) -> None:
 
 
 def register_blueprints(app: APIFlask) -> None:
-    from app.api import admin_bp, auth_bp, checkin_bp, events_bp, org_bp, tickets_bp
+    from app.api import admin_bp, auth_bp, bot_webhook_bp, checkin_bp, events_bp, org_bp, tickets_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(events_bp)
@@ -62,3 +62,4 @@ def register_blueprints(app: APIFlask) -> None:
     app.register_blueprint(checkin_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(org_bp)
+    app.register_blueprint(bot_webhook_bp)
