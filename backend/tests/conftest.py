@@ -18,6 +18,30 @@ from app.models.ticket import Ticket
 from app.models.user import User, UserRole
 from app.services.auth_service import hash_password
 from app.utils.jwt import create_access_token
+from tests.factories import (
+    AttendeeFactory,
+    EventFactory,
+    OrderFactory,
+    OrganizationFactory,
+    TicketFactory,
+    TicketTypeFactory,
+    UserFactory,
+)
+
+
+@pytest.fixture(autouse=True)
+def _factory_session(db):
+    """Inject the test DB session into all SQLAlchemyModelFactory subclasses."""
+    for cls in (
+        AttendeeFactory,
+        EventFactory,
+        OrderFactory,
+        OrganizationFactory,
+        TicketFactory,
+        TicketTypeFactory,
+        UserFactory,
+    ):
+        cls._meta.sqlalchemy_session = db.session
 
 
 @pytest.fixture
@@ -46,75 +70,51 @@ def db(app: Flask):
 
 @pytest.fixture
 def org(db) -> Organization:
-    org = Organization(
-        id=uuid.uuid4(),
-        name="Test Organization",
-        slug="test-org",
-        settings={},
-    )
-    db.session.add(org)
-    db.session.commit()
-    return org
+    return OrganizationFactory(name="Test Organization", slug="test-org")
 
 
 @pytest.fixture
 def admin_user(db, org: Organization) -> User:
-    user = User(
-        id=uuid.uuid4(),
+    return UserFactory(
         email="admin@test.com",
         password_hash=hash_password("password123"),
         name="Admin User",
         role=UserRole.ADMIN,
-        organization_id=org.id,
+        organization=org,
     )
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 @pytest.fixture
 def operator_user(db, org: Organization) -> User:
-    user = User(
-        id=uuid.uuid4(),
+    return UserFactory(
         email="operator@test.com",
         password_hash=hash_password("password123"),
         name="Operator User",
         role=UserRole.OPERATOR,
-        organization_id=org.id,
+        organization=org,
     )
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 @pytest.fixture
 def checkin_user(db, org: Organization) -> User:
-    user = User(
-        id=uuid.uuid4(),
+    return UserFactory(
         email="checkin@test.com",
         password_hash=hash_password("password123"),
         name="Check-in Staff",
         role=UserRole.CHECKIN_STAFF,
-        organization_id=org.id,
+        organization=org,
     )
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 @pytest.fixture
 def no_org_user(db) -> User:
-    user = User(
-        id=uuid.uuid4(),
+    return UserFactory(
         email="nobody@test.com",
         password_hash=hash_password("password123"),
         name="No Org User",
         role=UserRole.OPERATOR,
-        organization_id=None,
+        organization=None,
     )
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 @pytest.fixture
@@ -124,17 +124,13 @@ def admin_token(admin_user: User) -> str:
 
 @pytest.fixture
 def super_admin_user(db) -> User:
-    user = User(
-        id=uuid.uuid4(),
+    return UserFactory(
         email="super@admin.com",
         password_hash=hash_password("password123"),
         name="Super Admin",
         role=UserRole.ADMIN,
-        organization_id=None,
+        organization=None,
     )
-    db.session.add(user)
-    db.session.commit()
-    return user
 
 
 @pytest.fixture
@@ -163,9 +159,8 @@ def _auth_header(token: str) -> dict:
 
 @pytest.fixture
 def published_event(db, org: Organization) -> Event:
-    event = Event(
-        id=uuid.uuid4(),
-        organization_id=org.id,
+    return EventFactory(
+        organization=org,
         title="Python Conference",
         description="Annual Python conference",
         date=datetime(2026, 9, 15, 9, 0, tzinfo=timezone.utc),
@@ -175,16 +170,12 @@ def published_event(db, org: Organization) -> Event:
         seating_type=SeatingType.GENERAL,
         slug="python-conf-2026",
     )
-    db.session.add(event)
-    db.session.commit()
-    return event
 
 
 @pytest.fixture
 def draft_event(db, org: Organization) -> Event:
-    event = Event(
-        id=uuid.uuid4(),
-        organization_id=org.id,
+    return EventFactory(
+        organization=org,
         title="Draft Event",
         description="Not published yet",
         date=datetime(2026, 11, 1, 10, 0, tzinfo=timezone.utc),
@@ -194,70 +185,35 @@ def draft_event(db, org: Organization) -> Event:
         seating_type=SeatingType.GENERAL,
         slug="draft-event",
     )
-    db.session.add(event)
-    db.session.commit()
-    return event
 
 
 @pytest.fixture
 def ticket_type(db, published_event: Event) -> TicketType:
-    tt = TicketType(
-        id=uuid.uuid4(),
-        event_id=published_event.id,
+    return TicketTypeFactory(
+        event=published_event,
         name="General Admission",
         description="Standard entry",
         price=0,
         capacity=400,
         max_per_order=5,
     )
-    db.session.add(tt)
-    db.session.commit()
-    return tt
 
 
 @pytest.fixture
 def vip_ticket_type(db, published_event: Event) -> TicketType:
-    tt = TicketType(
-        id=uuid.uuid4(),
-        event_id=published_event.id,
+    return TicketTypeFactory(
+        event=published_event,
         name="VIP",
         description="Premium entry",
         price=0,
         capacity=100,
         max_per_order=2,
     )
-    db.session.add(tt)
-    db.session.commit()
-    return tt
 
 
 @pytest.fixture
 def created_order(db, published_event: Event, ticket_type: TicketType) -> tuple[Order, Attendee, Ticket]:
-    attendee = Attendee(
-        id=uuid.uuid4(),
-        name="John Doe",
-        email="john@test.com",
-        link_code="test-link-code",
-    )
-    db.session.add(attendee)
-    db.session.flush()
-
-    order = Order(
-        id=uuid.uuid4(),
-        event_id=published_event.id,
-        status=OrderStatus.CONFIRMED,
-    )
-    db.session.add(order)
-    db.session.flush()
-
-    ticket = Ticket(
-        id=uuid.uuid4(),
-        order_id=order.id,
-        ticket_type_id=ticket_type.id,
-        attendee_id=attendee.id,
-        qr_hash="a" * 64,
-    )
-    db.session.add(ticket)
-    db.session.commit()
-
+    attendee = AttendeeFactory(name="John Doe", email="john@test.com", link_code="test-link-code")
+    order = OrderFactory(event=published_event, status=OrderStatus.CONFIRMED)
+    ticket = TicketFactory(order=order, attendee=attendee, ticket_type=ticket_type, qr_hash="a" * 64)
     return order, attendee, ticket

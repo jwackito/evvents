@@ -8,10 +8,9 @@ from sqlalchemy import func, or_, select
 from app.exceptions import ConflictError, NotFoundError, ForbiddenError
 from app.extensions import db
 from app.models.attendee import Attendee
-from app.models.event import Event, EventStatus
+from app.models.event import Event, EventStatus, TicketType
 from app.models.order import Order, OrderStatus
 from app.models.ticket import Ticket
-from app.models.ticket_type import TicketType
 
 
 def get_checkin_events(org_id: uuid.UUID) -> dict:
