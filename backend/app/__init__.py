@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from apiflask import APIFlask
+from flask_cors import CORS
 
 from app.config import Settings
 from app.extensions import db, migrate
@@ -11,6 +12,8 @@ def create_app() -> APIFlask:
     app = APIFlask(__name__)
 
     app.config.from_mapping(settings.to_flask_config())
+
+    CORS(app)
 
     db.init_app(app)
     migrate.init_app(app, db)
