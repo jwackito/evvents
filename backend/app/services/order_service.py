@@ -87,6 +87,11 @@ def create_order(
 
     db.session.commit()
 
+    if event.organization.telegram_bot_token:
+        from app.tasks.telegram_tasks import enqueue_ticket_card
+
+        enqueue_ticket_card(str(order.id), event.organization.telegram_bot_token)
+
     return {
         "data": {
             "order_id": str(order.id),
