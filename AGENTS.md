@@ -81,6 +81,7 @@
 - **Commits**: Small, focused, one logical change per commit. Write descriptive commit messages (imperative mood).
 - **Merging**: Squash merge feature branches into `main`. Keep `main` history linear and clean.
 - **Before commit**: Run linter + tests locally. Never commit broken code.
+- **After activity**: Commit immediately after finishing an activity if code is not broken. Never push without asking for permission first.
 
 ## Docker
 
