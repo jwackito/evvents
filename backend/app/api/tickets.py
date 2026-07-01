@@ -4,8 +4,8 @@ from apiflask import APIBlueprint, Schema
 from flask import request
 from marshmallow import fields, validate
 
-from app.api.decorators import require_auth
-from app.services.order_service import create_order
+from app.api.decorators import require_auth, require_role
+from app.services.order_service import create_order, get_order, get_user_orders
 from app.services.ticket_service import check_in_ticket, get_ticket_by_qr, link_ticket
 from app.services.waitlist_service import get_position, join_waitlist, leave_waitlist
 
@@ -58,6 +58,19 @@ def check_in(json_data):
 @tickets_bp.input(LinkInput)
 def link(json_data):
     return link_ticket(json_data["qr_hash"], json_data["link_code"])
+
+
+@tickets_bp.get("/orders/<id>")
+def order_detail(id: str):
+    return get_order(id)
+
+
+@tickets_bp.get("/me/orders")
+@require_auth
+def my_orders():
+    from flask import g
+
+    return get_user_orders(g.user.email)
 
 
 class WaitlistJoinInput(Schema):

@@ -114,6 +114,67 @@ def create_order(
     }
 
 
+def get_order(order_id: str) -> dict:
+    order = db.session.get(Order, order_id)
+    if order is None:
+        raise NotFoundError("Order not found")
+
+    return {
+        "data": {
+            "order_id": str(order.id),
+            "event_id": str(order.event_id),
+            "event_title": order.event.title,
+            "event_slug": order.event.slug,
+            "event_date": order.event.date.isoformat(),
+            "status": order.status.value,
+            "created_at": order.created_at.isoformat() if order.created_at else None,
+            "tickets": [
+                {
+                    "id": str(t.id),
+                    "qr_hash": t.qr_hash,
+                    "ticket_type": t.ticket_type.name,
+                    "checked_in": t.checked_in,
+                    "seat": t.seat,
+                }
+                for t in order.tickets
+            ],
+            "attendee": {
+                "id": str(order.tickets[0].attendee.id),
+                "name": order.tickets[0].attendee.name,
+                "email": order.tickets[0].attendee.email,
+                "link_code": order.tickets[0].attendee.link_code,
+            } if order.tickets else None,
+        }
+    }
+
+
+def get_user_orders(email: str) -> dict:
+    orders = db.session.execute(
+        select(Order)
+        .join(Ticket, Ticket.order_id == Order.id)
+        .join(Attendee, Attendee.id == Ticket.attendee_id)
+        .where(Attendee.email == email)
+        .distinct()
+        .order_by(Order.created_at.desc())
+    ).scalars().all()
+
+    return {
+        "data": [
+            {
+                "order_id": str(o.id),
+                "event_id": str(o.event_id),
+                "event_title": o.event.title,
+                "event_slug": o.event.slug,
+                "event_date": o.event.date.isoformat(),
+                "status": o.status.value,
+                "ticket_count": len(o.tickets),
+                "created_at": o.created_at.isoformat() if o.created_at else None,
+            }
+            for o in orders
+        ]
+    }
+
+
 def _generate_qr_hash() -> str:
     raw = f"{uuid.uuid4()}-{secrets.token_hex(16)}-{datetime.now(timezone.utc).isoformat()}"
     return hashlib.sha256(raw.encode()).hexdigest()
