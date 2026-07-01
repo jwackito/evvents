@@ -13,6 +13,8 @@ import EventForm from "@/pages/EventForm";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import MyTickets from "@/pages/MyTickets";
+import CheckinEvents from "@/pages/CheckinEvents";
+import CheckinEvent from "@/pages/CheckinEvent";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ export default function App() {
               <Route path="/checkout/:slug" element={<Checkout />} />
               <Route path="/orders/:id" element={<OrderConfirmation />} />
               <Route path="/tickets" element={<MyTickets />} />
+              <Route path="/checkin" element={<CheckinEvents />} />
+              <Route path="/checkin/:eventId" element={<CheckinEvent />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
