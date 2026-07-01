@@ -2,15 +2,22 @@ import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { post, get } from "@/services/api";
 import { useAuthStore } from "@/stores/auth";
-import type { AuthResponse, User } from "@/types";
+import type { User } from "@/types";
+
+type AuthData = {
+  data: {
+    access_token: string;
+    refresh_token: string;
+  };
+};
 
 export function useLogin() {
   const login = useAuthStore((s) => s.login);
   return useMutation({
     mutationFn: (data: { email: string; password: string }) =>
-      post<AuthResponse>("/api/v1/auth/login", data),
+      post<AuthData>("/api/v1/auth/login", data),
     onSuccess: (res) => {
-      login(res.access_token, res.refresh_token, res.user);
+      login(res.data.access_token, res.data.refresh_token, null);
     },
   });
 }
@@ -19,9 +26,9 @@ export function useRegister() {
   const login = useAuthStore((s) => s.login);
   return useMutation({
     mutationFn: (data: { email: string; password: string; name: string }) =>
-      post<AuthResponse>("/api/v1/auth/register", data),
+      post<AuthData>("/api/v1/auth/register", data),
     onSuccess: (res) => {
-      login(res.access_token, res.refresh_token, res.user);
+      login(res.data.access_token, res.data.refresh_token, null);
     },
   });
 }
