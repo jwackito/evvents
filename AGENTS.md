@@ -147,13 +147,16 @@ This section is updated after every completed task and when new features are req
 - [ ] **#11** — Login, Register, and magic link pages
 - [x] **#12** — Dashboard page with stats and quick actions
 - [x] **#13** — Events list, detail, and organizer CRUD
-- [ ] **#14** — Order flow and ticket display
-- [ ] **#15** — Check-in scanning and history
-- [ ] **#16** — Admin panel for organizations and users
+- [x] **#14** — Order flow and ticket display
+- [x] **#15** — Check-in scanning and history
+- [x] **#16** — Admin panel for organizations and users
 
 ### Recently Completed
 
 - **`feat: add Events CRUD pages with list, detail, create/edit forms`** (#13)
+- **`feat: add admin panel for organizations and users`** (#16)
+- **`feat: add check-in scanning UI with history and search`** (#15)
+- **`feat: add order flow and ticket display`** (#14)
 - **`feat: add Dashboard page with stats, event preview, and quick actions`** (#12)
 - **`feat: add styling system, collapsible sidebar layout, and toasts`** (#10)
 - **`fix: add missing migration for users, orders, tickets, attendees, waitlist tables`** (#9)
