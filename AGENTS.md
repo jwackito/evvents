@@ -165,6 +165,7 @@ This section is updated after every completed task and when new features are req
 
 ### Recently Completed
 
+- **`fix: user profile never fetched after login — useMe() not called`** (#20)
 - **`fix: event update fails with 422 because slug is an unknown field`** (#19)
 - **`fix: resolve AttributeError 'user' on /me/orders and /auth/me`** (#18)
 - **`feat: add Events CRUD pages with list, detail, create/edit forms`** (#13)
