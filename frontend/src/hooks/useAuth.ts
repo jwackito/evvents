@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { post, get } from "@/services/api";
 import { useAuthStore } from "@/stores/auth";
@@ -35,14 +36,19 @@ export function useRequestMagicLink() {
 export function useMe() {
   const token = useAuthStore((s) => s.token);
   const setUser = useAuthStore((s) => s.setUser);
-  return useQuery({
+  const query = useQuery<User>({
     queryKey: ["me"],
-    queryFn: () => get<User>("/api/v1/auth/me"),
+    queryFn: () => get<{ data: User }>("/api/v1/auth/me").then((r) => r.data),
     enabled: !!token,
-    onSuccess: (user) => {
-      setUser(user);
-    },
   });
+
+  useEffect(() => {
+    if (query.data) {
+      setUser(query.data);
+    }
+  }, [query.data, setUser]);
+
+  return query;
 }
 
 export function useLogout() {
