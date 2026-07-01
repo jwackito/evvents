@@ -135,22 +135,29 @@ This section is updated after every completed task and when new features are req
 - *(empty — all done)*
 
 #### Testing
-- [ ] **Unit tests for services** — `email_service`, `order_service`, `waitlist_service`, `seating_service`, `admin_service`.
-- [ ] **Unit tests for tasks** — `telegram_tasks`, `email_tasks`.
-- [ ] **Unit tests for utils** — JWT utils, decorators.
-- [ ] **Unit tests for models** — constraints, relationships, custom methods.
+- [ ] **#1** — Unit tests for auth service, JWT utils, and decorators
+- [ ] **#2** — Unit tests for email service and email tasks
+- [ ] **#3** — Unit tests for event service and org service
+- [ ] **#4** — Unit tests for ticket service and order service
+- [ ] **#5** — Unit tests for waitlist service and seating service
+- [ ] **#6** — Unit tests for admin service and checkin service
+- [ ] **#7** — Unit tests for telegram tasks
 
 #### Frontend
-- [ ] **Build full UI** — Issues #10–#16: styling/layout, auth pages, dashboard, events CRUD, order/ticket flow, check-in UI, admin panel.
+- [ ] **#11** — Login, Register, and magic link pages
+- [ ] **#12** — Dashboard page with stats and quick actions
+- [ ] **#13** — Events list, detail, and organizer CRUD
+- [ ] **#14** — Order flow and ticket display
+- [ ] **#15** — Check-in scanning and history
+- [ ] **#16** — Admin panel for organizations and users
 
 ### Recently Completed
 
-- **`feat: scaffold React SPA`**
+- **`feat: add styling system, collapsible sidebar layout, and toasts`** (#10)
+- **`fix: add missing migration for users, orders, tickets, attendees, waitlist tables`** (#9)
+- **`fix: preserve DB schema between test sessions`**
+- **`feat: scaffold React SPA`** (#8)
 - **`refactor: use factory_boy for test fixtures`**
 - **`feat: add plugin base classes with hook interfaces`**
 - **`feat: add plugin registry with type-based querying`**
-- **`feat: add plugin discovery via importlib.metadata entry points`**
-- **`feat: wire plugin system into app factory`**
-- **`test: add 16 tests for plugin system`**
-- **`feat: implement check-in blueprint with 6 endpoints`**
 - *(reset at project start; oldest items drop as new ones are added)*
