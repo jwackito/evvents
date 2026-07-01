@@ -15,6 +15,7 @@ import OrderConfirmation from "@/pages/OrderConfirmation";
 import MyTickets from "@/pages/MyTickets";
 import CheckinEvents from "@/pages/CheckinEvents";
 import CheckinEvent from "@/pages/CheckinEvent";
+import Admin from "@/pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ export default function App() {
               <Route path="/tickets" element={<MyTickets />} />
               <Route path="/checkin" element={<CheckinEvents />} />
               <Route path="/checkin/:eventId" element={<CheckinEvent />} />
+              <Route path="/admin" element={<Admin />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
