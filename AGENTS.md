@@ -56,7 +56,7 @@
 - **File per component**: One component per file, named after the component.
 - **Hooks**: Custom hooks for data fetching (`useEvents`, `useTickets`), local state abstraction, and reusable logic.
 - **State management**: Zustand for global state (auth, current org). React Query (TanStack Query) for server state (caching, refetching, mutations).
-- **Styling**: Use a consistent approach (CSS Modules or Tailwind). Keep styles co-located with components.
+- **Styling**: CSS Modules. Keep styles co-located with components (`*.module.css`).
 - **API calls**: Centralized API client in `src/services/api.ts` with interceptors for auth token injection and error handling.
 - **Routing**: React Router v6. Lazy-load route pages.
 
@@ -141,7 +141,7 @@ This section is updated after every completed task and when new features are req
 - [ ] **Unit tests for models** — constraints, relationships, custom methods.
 
 #### Frontend
-- [ ] **Build full UI on top of scaffold** — Login, Register, Dashboard, Events pages with proper forms, tables, and styling.
+- [ ] **Build full UI** — Issues #10–#16: styling/layout, auth pages, dashboard, events CRUD, order/ticket flow, check-in UI, admin panel.
 
 ### Recently Completed
 
