@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { configureAuth } from "@/services/api";
 import { useAuthStore } from "@/stores/auth";
+import { useMe } from "@/hooks/useAuth";
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "@/pages/Login";
@@ -24,9 +25,15 @@ configureAuth(
   () => useAuthStore.getState().logout(),
 );
 
+function AuthInit() {
+  useMe();
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthInit />
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
