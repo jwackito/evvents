@@ -21,6 +21,7 @@ def create_app() -> APIFlask:
 
     register_error_handlers(app)
     register_blueprints(app)
+    register_cli(app)
     init_plugins(app)
 
     @app.get("/health")
@@ -60,6 +61,12 @@ def register_error_handlers(app: APIFlask) -> None:
     @app.errorhandler(500)
     def handle_internal_error(error):
         return {"error": "Internal server error", "code": "INTERNAL_ERROR"}, 500
+
+
+def register_cli(app: APIFlask) -> None:
+    from app import cli
+
+    cli.init_app(app)
 
 
 def register_blueprints(app: APIFlask) -> None:

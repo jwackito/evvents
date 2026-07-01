@@ -16,5 +16,8 @@ echo "Redis ready"
 echo "Running database migrations..."
 flask db upgrade
 
+echo "Seeding development data..."
+flask seed
+
 echo "Starting application..."
 exec "$@"
