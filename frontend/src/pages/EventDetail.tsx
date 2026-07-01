@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEventDetail, useOrgTicketTypes, useDeleteEvent, useCreateTicketType, useDeleteTicketType, useEventStats, useEventOrders } from "@/hooks/useOrgEvents";
 import { useAuthStore } from "@/stores/auth";
+import type { Event as EventType, TicketType } from "@/types";
 import styles from "./EventDetail.module.css";
 
 export default function EventDetail() {
@@ -58,6 +59,7 @@ function EventDetailInner({ slug, tab, onTabChange, navigate, user }: InnerProps
 
   const event = eventDetail.data;
   const isOrgMember = user?.role === "admin" || user?.role === "operator";
+  const isPublished = event.status === "published";
 
   return (
     <div className={styles.page}>
@@ -85,30 +87,105 @@ function EventDetailInner({ slug, tab, onTabChange, navigate, user }: InnerProps
         )}
       </div>
 
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tab} ${tab === "overview" ? styles.active : ""}`}
-          onClick={() => onTabChange("overview")}
-        >
-          Overview
-        </button>
-        <button
-          className={`${styles.tab} ${tab === "ticket-types" ? styles.active : ""}`}
-          onClick={() => onTabChange("ticket-types")}
-        >
-          Ticket Types
-        </button>
-        <button
-          className={`${styles.tab} ${tab === "orders" ? styles.active : ""}`}
-          onClick={() => onTabChange("orders")}
-        >
-          Orders
-        </button>
-      </div>
+      <PublicEventInfo event={event} />
 
-      {tab === "overview" && <OverviewTab event={event} />}
-      {tab === "ticket-types" && <TicketTypesTab eventId={event.id} />}
-      {tab === "orders" && <OrdersTab eventId={event.id} />}
+      {isPublished && event.ticket_types && event.ticket_types.length > 0 && (
+        <PublicTicketTypes slug={slug} ticketTypes={event.ticket_types} />
+      )}
+
+      {isOrgMember && (
+        <>
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${tab === "overview" ? styles.active : ""}`}
+              onClick={() => onTabChange("overview")}
+            >
+              Overview
+            </button>
+            <button
+              className={`${styles.tab} ${tab === "ticket-types" ? styles.active : ""}`}
+              onClick={() => onTabChange("ticket-types")}
+            >
+              Ticket Types
+            </button>
+            <button
+              className={`${styles.tab} ${tab === "orders" ? styles.active : ""}`}
+              onClick={() => onTabChange("orders")}
+            >
+              Orders
+            </button>
+          </div>
+
+          {tab === "overview" && <OverviewTab event={event} />}
+          {tab === "ticket-types" && <TicketTypesTab eventId={event.id} />}
+          {tab === "orders" && <OrdersTab eventId={event.id} />}
+        </>
+      )}
+    </div>
+  );
+}
+
+function PublicEventInfo({ event }: { event: EventType }) {
+  return (
+    <div className={styles.overviewGrid} style={{ marginBottom: 24 }}>
+      <div className={styles.field}>
+        <span className={styles.fieldLabel}>Date</span>
+        <span className={styles.fieldValue}>
+          {new Date(event.date).toLocaleDateString(undefined, {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
+      </div>
+      <div className={styles.field}>
+        <span className={styles.fieldLabel}>Location</span>
+        <span className={styles.fieldValue}>{event.location ?? "TBD"}</span>
+      </div>
+      <div className={styles.field}>
+        <span className={styles.fieldLabel}>Capacity</span>
+        <span className={styles.fieldValue}>{event.capacity}</span>
+      </div>
+    </div>
+  );
+}
+
+function PublicTicketTypes({ slug, ticketTypes }: { slug: string; ticketTypes: TicketType[] }) {
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 600, marginBottom: 16 }}>
+        Tickets
+      </h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {ticketTypes.map((tt) => (
+          <div
+            key={tt.id}
+            className={styles.ticketTypeCard}
+          >
+            <div className={styles.ticketTypeInfo}>
+              <div className={styles.ticketTypeName}>{tt.name}</div>
+              {tt.description && (
+                <div className={styles.ticketTypeDesc}>{tt.description}</div>
+              )}
+              <div className={styles.ticketTypeMeta}>
+                {tt.capacity} available &middot; max {tt.max_per_order} per order
+              </div>
+            </div>
+            <div className={styles.ticketTypeRight}>
+              <div className={styles.ticketTypePrice}>
+                ${(tt.price / 100).toFixed(2)}
+              </div>
+              <Link
+                to={`/checkout/${slug}?ticket_type_id=${tt.id}`}
+                className={`${styles.btn} ${styles.btnPrimary} ${styles.btnSmall}`}
+              >
+                Buy
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
