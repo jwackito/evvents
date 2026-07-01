@@ -18,6 +18,7 @@ from app.models.ticket import Ticket
 from app.models.user import User, UserRole
 from app.services.auth_service import hash_password
 from app.utils.jwt import create_access_token
+from sqlalchemy import text
 from tests.factories import (
     AttendeeFactory,
     EventFactory,
@@ -53,9 +54,11 @@ def app() -> Generator[Flask, None, None]:
     })
     with application.app_context():
         _db.create_all()
+        for table in reversed(_db.metadata.sorted_tables):
+            _db.session.execute(table.delete())
+        _db.session.commit()
         yield application
         _db.session.rollback()
-        _db.drop_all()
 
 
 @pytest.fixture
