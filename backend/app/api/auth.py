@@ -137,6 +137,10 @@ def refresh(json_data):
 @require_auth
 def me():
     user = get_user_by_id(g.user_id)
+    if user is None:
+        from app.exceptions import NotFoundError
+
+        raise NotFoundError("User not found")
     return {
         "data": {
             "id": str(user.id),

@@ -77,6 +77,51 @@ def test_link_not_found(client):
     assert resp.status_code == 404
 
 
+def test_my_orders_success(client, db, published_event, ticket_type):
+    email = f"user-{uuid.uuid4().hex[:8]}@test.com"
+    reg = client.post("/api/v1/auth/register", json={
+        "email": email,
+        "password": "password123",
+        "name": "Test User",
+    })
+    token = reg.get_json()["data"]["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    from tests.factories import AttendeeFactory, OrderFactory, TicketFactory
+    from app.models.order import OrderStatus
+
+    attendee = AttendeeFactory(email=email, name="Test User")
+    order = OrderFactory(event=published_event, status=OrderStatus.CONFIRMED)
+    TicketFactory(order=order, attendee=attendee, ticket_type=ticket_type, qr_hash="z" * 64)
+
+    resp = client.get("/api/v1/me/orders", headers=headers)
+    assert resp.status_code == 200
+    data = resp.get_json()["data"]
+    assert len(data) == 1
+    assert data[0]["order_id"] == str(order.id)
+    assert data[0]["event_title"] == published_event.title
+
+
+def test_my_orders_empty(client):
+    email = f"user-{uuid.uuid4().hex[:8]}@test.com"
+    reg = client.post("/api/v1/auth/register", json={
+        "email": email,
+        "password": "password123",
+        "name": "Test User",
+    })
+    token = reg.get_json()["data"]["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    resp = client.get("/api/v1/me/orders", headers=headers)
+    assert resp.status_code == 200
+    assert resp.get_json()["data"] == []
+
+
+def test_my_orders_no_auth(client):
+    resp = client.get("/api/v1/me/orders")
+    assert resp.status_code == 401
+
+
 def _admin_headers(client):
     email = f"admin-{uuid.uuid4().hex[:8]}@test.com"
     reg = client.post("/api/v1/auth/register", json={

@@ -198,3 +198,22 @@ def test_me_expired_token(client):
     expired = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MX0.dE_UZ7I1b8FDXCMJQOGa1e5mG7DBBy5kM_vCg6JRIQk"
     resp = client.get(f"{URL}/me", headers={"Authorization": f"Bearer {expired}"})
     assert resp.status_code == 401
+
+
+def test_me_deleted_user(client, db):
+    reg = client.post(f"{URL}/register", json={
+        "email": "todelete@test.com",
+        "password": "password123",
+        "name": "To Delete",
+    })
+    token = reg.get_json()["data"]["access_token"]
+    user_id = reg.get_json()["data"]["user"]["id"]
+
+    from app.models.user import User
+    user = db.session.get(User, uuid.UUID(user_id))
+    db.session.delete(user)
+    db.session.commit()
+
+    resp = client.get(f"{URL}/me", headers={"Authorization": f"Bearer {token}"})
+    assert resp.status_code == 404
+    assert resp.get_json()["code"] == "NOT_FOUND"

@@ -70,7 +70,14 @@ def order_detail(id: str):
 def my_orders():
     from flask import g
 
-    return get_user_orders(g.user.email)
+    from app.services.auth_service import get_user_by_id
+
+    user = get_user_by_id(g.user_id)
+    if user is None:
+        from app.exceptions import NotFoundError
+
+        raise NotFoundError("User not found")
+    return get_user_orders(user.email)
 
 
 class WaitlistJoinInput(Schema):
