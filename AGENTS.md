@@ -152,7 +152,7 @@ This section is updated after every completed task and when new features are req
 - [ ] **#4** — Unit tests for ticket service and order service
 - [ ] **#5** — Unit tests for waitlist service and seating service
 - [ ] **#6** — Unit tests for admin service and checkin service
-- [ ] **#7** — Unit tests for telegram tasks
+- [x] **#7** — Unit tests for telegram tasks
 
 #### Frontend
 - [x] **#11** — Login, Register, and magic link pages
@@ -165,6 +165,7 @@ This section is updated after every completed task and when new features are req
 
 ### Recently Completed
 
+- **`test: add unit tests for telegram_tasks`** (#7)
 - **`fix: user profile never fetched after login — useMe() not called`** (#20)
 - **`fix: event update fails with 422 because slug is an unknown field`** (#19)
 - **`fix: resolve AttributeError 'user' on /me/orders and /auth/me`** (#18)
