@@ -15,6 +15,7 @@ from app.services.org_service import (
     delete_ticket_type,
     get_event_orders,
     get_event_stats,
+    get_org_event_by_slug,
     list_checkin_events,
     list_org_events,
     list_ticket_types,
@@ -87,6 +88,13 @@ def org_list_events():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 20, type=int)
     return list_org_events(org_id, status=status, page=page, per_page=per_page)
+
+
+@org_bp.get("/events/<slug>")
+@require_role("admin", "operator", "checkin_staff")
+def org_get_event(slug: str):
+    org_id = _require_org()
+    return get_org_event_by_slug(slug, org_id)
 
 
 @org_bp.post("/events")

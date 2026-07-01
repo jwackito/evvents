@@ -19,7 +19,7 @@ export function useEventDetail(id: string) {
   const token = useAuthStore((s) => s.token);
   return useQuery({
     queryKey: ["org-event", id],
-    queryFn: () => get<{ data: Event }>(`/api/v1/events/${id}`),
+    queryFn: () => get<{ data: Event }>(`/api/v1/org/events/${id}`),
     enabled: !!token && !!id,
   });
 }

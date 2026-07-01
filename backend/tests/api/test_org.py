@@ -54,6 +54,19 @@ def test_update_event_status(client, admin_token, published_event):
     assert resp.get_json()["data"]["status"] == "cancelled"
 
 
+def test_get_event_detail(client, admin_token, draft_event):
+    resp = client.get(f"{URL}/events/{draft_event.slug}", headers=_headers(admin_token))
+    assert resp.status_code == 200
+    data = resp.get_json()["data"]
+    assert data["id"] == str(draft_event.id)
+    assert data["status"] == "draft"
+
+
+def test_get_event_detail_not_found(client, admin_token):
+    resp = client.get(f"{URL}/events/non-existent-slug", headers=_headers(admin_token))
+    assert resp.status_code == 404
+
+
 def test_delete_event(client, admin_token, published_event):
     resp = client.delete(f"{URL}/events/{published_event.id}", headers=_headers(admin_token))
     assert resp.status_code == 204

@@ -81,6 +81,15 @@ def create_event(org_id: uuid.UUID, data: dict) -> dict:
     return {"data": _event_to_dict(event)}
 
 
+def get_org_event_by_slug(slug: str, org_id: uuid.UUID) -> dict:
+    event = db.session.execute(
+        select(Event).where(Event.slug == slug, Event.organization_id == org_id)
+    ).scalar_one_or_none()
+    if event is None:
+        raise NotFoundError("Event not found")
+    return {"data": _event_to_dict(event)}
+
+
 def update_event(event_id: uuid.UUID, org_id: uuid.UUID, data: dict) -> dict:
     event = _verify_event_ownership(event_id, org_id)
 
