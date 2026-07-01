@@ -107,7 +107,18 @@ def update_event(event_id: uuid.UUID, org_id: uuid.UUID, data: dict) -> dict:
                 f"Capacity cannot be less than {confirmed} confirmed tickets"
             )
 
-    for field in ("title", "description", "date", "location", "capacity", "cover_image"):
+    if "slug" in data and data["slug"] != event.slug:
+        existing = db.session.execute(
+            select(Event).where(
+                Event.slug == data["slug"],
+                Event.organization_id == org_id,
+                Event.id != event.id,
+            )
+        ).scalar_one_or_none()
+        if existing:
+            raise ConflictError("An event with this slug already exists")
+
+    for field in ("title", "description", "date", "location", "capacity", "cover_image", "slug"):
         if field in data:
             setattr(event, field, data[field])
 

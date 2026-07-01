@@ -54,6 +54,7 @@ class EventUpdate(Schema):
     date = fields.DateTime()
     location = fields.String(allow_none=True, validate=validate.Length(max=255))
     capacity = fields.Integer(validate=validate.Range(min=1))
+    slug = fields.String(validate=validate.Length(max=255))
     status = fields.String(validate=validate.OneOf(["draft", "published", "cancelled", "completed"]))
     seating_type = fields.String(validate=validate.OneOf(["general", "assigned"]))
     cover_image = fields.String(allow_none=True)
