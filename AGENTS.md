@@ -82,6 +82,7 @@
 - **Merging**: Squash merge feature branches into `main`. Keep `main` history linear and clean.
 - **Before commit**: Run linter + tests locally. Never commit broken code.
 - **After activity**: Commit immediately after finishing an activity if code is not broken. Never push without asking for permission first.
+- **Bug fixes**: Follow the Error Resolution Workflow (write test → create issue → fix → explain → commit → ask before push).
 
 ## Docker
 
@@ -117,6 +118,16 @@
 - **Inline comments**: Minimal. Only document *why* something is done a certain way, not *what* the code does (the code itself should be clear).
 - **Work Tracker**: Update the Remaining Work Tracker in AGENTS.md immediately after every completed task. Add new entries to "Recently Completed" (newest first). Verify Backlog items reflect current reality before starting the next task.
 
+## Error Resolution Workflow
+
+When a bug or error is discovered:
+1. **Write a failing test** that reproduces the error
+2. **Create a GitHub issue** describing the error (title, steps to reproduce, expected vs actual)
+3. **Fix the error** — make the test pass
+4. **Explain the fix** as a comment on the GitHub issue
+5. **Commit** with conventional commit message referencing the issue
+6. **Ask for permission** before pushing
+
 ## Scope of Authority
 
 - **Project only**: All modifications are restricted to files within the project directory.
@@ -144,7 +155,8 @@ This section is updated after every completed task and when new features are req
 - [ ] **#7** — Unit tests for telegram tasks
 
 #### Frontend
-- [ ] **#11** — Login, Register, and magic link pages
+- [x] **#11** — Login, Register, and magic link pages
+- [x] **#17** — Fix: login response path + auth state (frontend read `res.access_token` instead of `res.data.access_token`)
 - [x] **#12** — Dashboard page with stats and quick actions
 - [x] **#13** — Events list, detail, and organizer CRUD
 - [x] **#14** — Order flow and ticket display
