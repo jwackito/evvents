@@ -8,6 +8,8 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import Events from "@/pages/Events";
+import EventDetail from "@/pages/EventDetail";
+import EventForm from "@/pages/EventForm";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,9 @@ export default function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/events/new" element={<EventForm />} />
+              <Route path="/events/:slug/edit" element={<EventForm />} />
+              <Route path="/events/:slug" element={<EventDetail />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

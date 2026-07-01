@@ -29,3 +29,13 @@ export const useToastStore = create<ToastState>((set) => ({
     set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }));
   },
 }));
+
+export function useToast() {
+  const addToast = useToastStore((s) => s.addToast);
+  return {
+    success: (msg: string) => addToast("success", msg),
+    error: (msg: string) => addToast("error", msg),
+    info: (msg: string) => addToast("info", msg),
+    warning: (msg: string) => addToast("warning", msg),
+  };
+}

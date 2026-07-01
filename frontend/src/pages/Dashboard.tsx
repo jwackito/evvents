@@ -69,7 +69,7 @@ export default function Dashboard() {
       </div>
 
       <div className={styles.actions}>
-        <Link to="/events" className={`${styles.btn} ${styles.btnPrimary}`}>
+        <Link to="/events/new" className={`${styles.btn} ${styles.btnPrimary}`}>
           + Create Event
         </Link>
         <Link to="/events" className={`${styles.btn} ${styles.btnSecondary}`}>
